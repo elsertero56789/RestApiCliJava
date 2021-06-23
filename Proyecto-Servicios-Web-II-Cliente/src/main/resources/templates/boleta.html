@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1">
+<title>Boleta</title>
+<!-- Bootstrap CSS -->
+<link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
+	integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l"
+	crossorigin="anonymous">
+<link rel="stylesheet"
+	href="https://cdn.datatables.net/1.10.23/css/dataTables.bootstrap4.min.css">
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+<link rel="stylesheet"
+	th:href="@{/resources/datepicker/bootstrap-datepicker.css}">
+<link rel="stylesheet"
+	th:href="@{/resources/alertifyjs/css/alertify.css}">
+<link rel="stylesheet"
+	th:href="@{/resources/alertifyjs/css/alertify.min.css}">
+<style>
+.modal-header, h4, .close {
+	background-color: #286090;
+	color: white !important;
+	text-align: center;
+	font-size: 20px;
+}
+
+.help-block {
+	color: red;
+	/*display: none;*/
+}
+
+.form-group.has-error .form-control-label {
+	color: red;
+}
+
+.form-group.has-error .form-control {
+	border: 1px solid red;
+	box-shadow: 0 0 0 0.2rem rgba(250, 16, 0, 0.18);
+}
+
+.alertify .ajs-dialog {
+	top: 50%;
+	transform: translateY(-50%);
+	margin: auto;
+}
+
+.ajs-header {
+	background-color: #286090 !important;
+	color: white !important;
+	/*text-align: center;*/
+	font-size: 18px;
+	font-weight: bold;
+}
+
+.ajs-ok {
+	color: #fff;
+	background-color: #007bff;
+	border-color: #007bff;
+}
+
+.ajs-cancel {
+	color: #fff;
+	background-color: #dc3545;
+	border-color: #dc3545;
+}
+
+.btn-primary {
+	background-color: #286090 !important;
+}
+
+.dataTables_length, .dataTables_info {
+	display: none;
+}
+
+.modal-lg, .modal-xl {
+	max-width: 900px;
+	max-height: 800px;
+}
+
+.form-control-feedback2 {
+	margin: 1px;
+	position: absolute;
+	padding: 10px;
+	pointer-events: none;
+	background-color: #e9ecef;
+	border-style: none;
+}
+
+.form-control-feedback3 {
+	margin: 1px;
+	position: absolute;
+	margin-left: 225px;
+	padding: 10px;
+	pointer-events: none;
+	background-color: #e9ecef;
+	border-style: none;
+}
+
+.form-control {
+	padding-left: 40px !important;
+}
+/*.toast-succes{
+		width: 120px;
+	}*/
+</style>
+</head>
+<body th:if="${cargo!='Administrador'}">
+	<nav class="navbar navbar-expand-lg navbar-light bg-secondary">
+		<a class="navbar-brand" href="#">Tienda</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse"
+			data-target="#navbarSupportedContent"
+			aria-controls="navbarSupportedContent" aria-expanded="false"
+			aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+
+		<div class="collapse navbar-collapse" id="navbarSupportedContent">
+			<ul class="navbar-nav mr-auto">
+				<li class="nav-item active"><a class="nav-link" href="#">Principal
+				</a></li>
+				<li class="nav-item active"><a class="nav-link"
+					href="/producto/listado">Productos </a></li>
+				<li class="nav-item active" th:if="${cargo==null}"><a
+					class="nav-link" href="/usuario/registro">Registrarme </a></li>
+				<li class="nav-item active" th:if="${cargo!=null}"><a
+					class="nav-link" href="/boleta/">Boleta </a></li>
+				<li class="nav-item active" th:if="${cargo!=null}"><a
+					class="nav-link" href="/boleta/pedidos">Pedidos </a></li>
+				<li class="nav-item dropdown active"
+					th:if="${cargo=='Administrador'}"><a
+					class="nav-link dropdown-toggle" href="#" id="navbarDropdown"
+					role="button" data-toggle="dropdown" aria-haspopup="true"
+					aria-expanded="false"> Mantenimientos </a>
+					<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+						<a class="dropdown-item" href="/producto/mantenimiento">Mantenimiento
+							Productos</a> <a class="dropdown-item" href="/cliente/mantenimiento">Mantenimiento
+							Clientes</a> <a class="dropdown-item" href="/empleado/mantenimiento">Mantenimiento
+							Empleados</a>
+					</div></li>
+			</ul>
+			<form th:if="${cargo!=null}" th:action="@{/salir}"
+				class="form-inline my-2 my-lg-0">
+				<button class="btn btn-outline my-2 my-sm-0"
+					style="background-color: #0069d9; color: white;" type="submit">Salir</button>
+			</form>
+			<form th:if="${cargo==null}" th:action="@{/login}"
+				class="form-inline my-2 my-lg-0">
+				<button class="btn btn-outline my-2 my-sm-0"
+					style="background-color: #0069d9; color: white;" type="submit">Ingresar</button>
+			</form>
+		</div>
+	</nav>
+
+	<div class="container">
+		<h3 class="text-center mt-4">PRODUCTOS SELECCIONADOS</h3>
+		<div class="row">
+			<section class="col-lg-9">
+				<div class="items" th:each="bean:${seleccionados}">
+					<!-- Item1-Starts-Here -->
+					<form th:action="@{/boleta/eliminaSeleccion}"
+						class="woocommerce-cart-form__cart-item cart_item d-sm-flex justify-content-between align-items-center my-4 pb-3 border-bottom">
+						<div
+							class="media d-block d-sm-flex align-items-center text-center text-sm-left">
+							<div
+								class="product-thumbnail d-inline-block mx-auto mr-sm-4 mb-2 mb-sm-0"
+								style="width: 10rem;">
+								<img width="100%" height="100%"
+									style="border-top-right-radius: 3px;"
+									src="/resources/images/fondo-dswii.jpg"
+									class="attachment-post-thumbnail size-post-thumbnail wp-post-image">
+							</div>
+							<input type="hidden" id="idProducto" name="idProducto"
+								th:value="${bean.idProducto}">
+							<div class="media-body">
+								<div class="product-name" data-title="Product">
+									<h3 class="product-title font-size-base mb-2">
+										<a th:text="${bean.descripcion}"></a>
+									</h3>
+								</div>
+								<div
+									class="product-price font-size-base text-accent mb-2 mb-sm-0"
+									data-title="Price">
+									<span class="woocommerce-Price-amount amount"> <span
+										class="woocommerce-Price-currencySymbol">S/.</span> <a
+										th:text="${bean.precio}"></a></span>
+								</div>
+							</div>
+						</div>
+						<div class="pl-sm-4 mx-auto mx-sm-0 text-center text-sm-left"
+							style="width: 9rem;">
+							<div class="product-quantity" data-title="Quantity">
+								<div class="form-group mb-0">
+									<label class="font-weight-medium d-none d-sm-block"
+										for="quantity_60ce34236dd5b">Cantidad</label>
+									<div class="quantity">
+										<input type="number" th:id="${bean.idProducto}"
+											class="form-control btn-cambiar" min="1" max="4"
+											name="cantidad" th:value="${bean.cantidad}"
+											onkeydown="return false">
+									</div>
+								</div>
+							</div>
+							<div class="product-remove">
+								<button class="remove btn btn-link px-0 text-danger"
+									type="submit">
+									<i class="czi-close-circle mr-2"></i><span class="font-size-sm">Eliminar</span>
+								</button>
+							</div>
+						</div>
+					</form>
+					<!-- //Item1-Ends-Here -->
+				</div>
+			</section>
+			<aside class="col-lg-3 pt-3 pt-lg-0" style="margin-top: 10px;">
+				<div class="cz-sidebar-static rounded-lg box-shadow-lg ml-lg-auto">
+					<form th:action="@{/boleta/guardar}">
+						<div class="cart-collaterals">
+							<div class="cart_totals ">
+								<h2 class="h3 mb-3 pb-1 text-center">Total a Pagar</h2>
+								<div class="shop_table shop_table_responsive pb-2">
+									<input type="hidden" id="idNumero" name="numero"
+										th:value="${numero}"> <input type="hidden"
+										id="idCliente" name="cliente" th:value="${cliente}"> <input
+										type="hidden" id="idMonto" name="monto" th:value="${monto}">
+									<input type="hidden" id="idFecha" name="fecha"
+										th:value="${fecha}">
+									<div
+										class="d-flex justify-content-between align-items-center font-size-md mb-2 pb-1 cart-subtotal">
+										<span class="mr-2">Sub Total :</span> <span class="text-right"
+											data-title="Subtotal"><span
+											class="woocommerce-Price-amount amount"> <span>S/.
+											</span> <a th:text="${monto}"></a></span></span>
+									</div>
+									<div
+										class="d-flex justify-content-between align-items-center font-size-md mb-2 pb-1 cart-subtotal">
+										<span class="mr-2">Fecha :</span> <span class="text-right"
+											data-title="Subtotal"><span
+											class="woocommerce-Price-amount amount"> <a
+												th:text="${fecha}"></a></span></span>
+									</div>
+									<div class="order-total text-center border-top pt-4 mt-4">
+										<h3 class="font-weight-normal mb-0" data-title="Total">
+											<strong><span
+												class="woocommerce-Price-amount amount"> <span
+													class="woocommerce-Price-currencySymbol">S/. </span> <a
+													th:text="${monto}"></a>
+											</span></strong>
+										</h3>
+									</div>
+								</div>
+								<div class="wc-proceed-to-checkout">
+									<button type="submit"
+										class="checkout-button btn btn-primary btn-shadow btn-block mt-4">
+										<i class="czi-card font-size-lg mr-2"></i>Pagar
+									</button>
+								</div>
+							</div>
+						</div>
+					</form>
+				</div>
+			</aside>
+		</div>
+	</div>
+
+	<!-- liberia completa de JQUERY -->
+	<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+	<!-- Option 1: jQuery and Bootstrap Bundle (includes Popper) -->
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns"
+		crossorigin="anonymous"></script>
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+	<script th:src="@{/resources/alertifyjs/alertify.js}"></script>
+	<script th:src="@{/resources/alertifyjs/alertify.min.js}"></script>
+
+	<script th:inline="javascript" th:if="${MENSAJE!=null}">
+		//obtener atributo MENSAJE
+		var mensaje = /*[[${MENSAJE}]]*/null;
+
+		toastr.success(mensaje, toastr.options = {
+			"timeOut" : "2000",
+			"positionClass " : " toast-top-right ",
+		});
+	</script>
+
+	<script>
+		$(document).on(
+				"change",
+				".btn-cambiar",
+				function(e) {
+					//obtener valor del atributo href del botón(etiqueta a) seleccionado.
+					var id = $(this).attr("id");
+					var valor = $(this).val();
+					$.get("agregarQuitarCantidad?idProducto=" + id
+							+ "&cantidad=" + valor, function(response) {
+						if (response == 'SI') {
+							window.location = "/boleta/";
+						}
+					});
+				});
+	</script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+

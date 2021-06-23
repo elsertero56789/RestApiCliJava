@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1">
+<title>LOGIN</title>
+<!-- Bootstrap CSS -->
+<!--===============================================================================================-->
+<link rel="icon" type="image/png" href="images/logo.png">
+<!--===============================================================================================-->
+<link rel="stylesheet" type="text/css"
+	th:href="@{/resources/vendor/bootstrap/css/bootstrap.min.css}">
+<!--===============================================================================================-->
+<link rel="stylesheet" type="text/css"
+	th:href="@{/resources/vendor/font-awesome-4.7.0/css/font-awesome.min.css}">
+<!--===============================================================================================-->
+<link rel="stylesheet" type="text/css"
+	th:href="@{/resources/vendor/iconic/css/material-design-iconic-font.min.css}">
+<!--===============================================================================================-->
+<link rel="stylesheet" type="text/css"
+	th:href="@{/resources/vendor/animate/animate.css}">
+<!--===============================================================================================-->
+<link rel="stylesheet" type="text/css"
+	th:href="@{/resources/vendor/animsition/css/animsition.min.css}">
+<!--===============================================================================================-->
+<link rel="stylesheet" type="text/css"
+	th:href="@{/resources/vendor/util.css}">
+<link rel="stylesheet" type="text/css"
+	th:href="@{/resources/vendor/main.css}">
+<!--===============================================================================================-->
+
+</head>
+<body
+	style="background-image: url('/resources/images/fondo-dswii.jpg'); background-repeat: no-repeat; background-size: 100%;">
+	<nav class="navbar navbar-expand-lg navbar-light bg-secondary">
+		<a class="navbar-brand" href="#">Tienda</a>
+		<button class="navbar-toggler" type="button" data-toggle="collapse"
+			data-target="#navbarSupportedContent"
+			aria-controls="navbarSupportedContent" aria-expanded="false"
+			aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+
+		<div class="collapse navbar-collapse" id="navbarSupportedContent">
+			<ul class="navbar-nav mr-auto">
+				<li class="nav-item active"><a class="nav-link" href="#">Principal
+				</a></li>
+				<li class="nav-item active"><a class="nav-link"
+					href="/producto/listado">Productos </a></li>
+				<li class="nav-item active" th:if="${cargo==null}"><a
+					class="nav-link" href="/usuario/registro">Registrarme </a></li>
+				<li class="nav-item active" th:if="${cargo!=null}"><a
+					class="nav-link" href="/boleta/">Boleta </a></li>
+				<li class="nav-item active" th:if="${cargo!=null}"><a
+					class="nav-link" href="/boleta/">Pedidos </a></li>
+				<li class="nav-item dropdown active"
+					th:if="${cargo=='Administrador'}"><a
+					class="nav-link dropdown-toggle" href="#" id="navbarDropdown"
+					role="button" data-toggle="dropdown" aria-haspopup="true"
+					aria-expanded="false"> Mantenimientos </a>
+					<div class="dropdown-menu" aria-labelledby="navbarDropdown">
+						<a class="dropdown-item" href="/producto/mantenimiento">Mantenimiento
+							Productos</a> <a class="dropdown-item" href="/cliente/mantenimiento">Mantenimiento
+							Clientes</a> <a class="dropdown-item" href="/empleado/mantenimiento">Mantenimiento
+							Empleados</a>
+					</div></li>
+			</ul>
+			<form th:if="${cargo!=null}" th:action="@{/salir}"
+				class="form-inline my-2 my-lg-0">
+				<button class="btn btn-outline my-2 my-sm-0"
+					style="background-color: #0069d9; color: white;" type="submit">Salir</button>
+			</form>
+			<form th:if="${cargo==null}" th:action="@{/login}"
+				class="form-inline my-2 my-lg-0">
+				<button class="btn btn-outline my-2 my-sm-0"
+					style="background-color: #0069d9; color: white;" type="submit">Ingresar</button>
+			</form>
+		</div>
+	</nav>
+	<div class="limiter" style="margin-top: 5em;">
+		<div class="wrap-login100 p-l-55 p-r-55 p-t-65 p-b-54">
+			<form accept-charset="UTF-8" class="login100-form validate-form"
+				th:action="@{/usuario/consulta}" method="POST">
+				<span class="login100-form-title p-b-49" style="color: #a470dd">
+					Login </span>
+				<div class="wrap-input100 validate-input m-b-23"
+					data-validate="Usuario requerido">
+					<span class="label-input100"> Usuario </span> <input
+						class="input100" type="text" name="usuario"
+						placeholder="Ingresa tu Usuario" id="id_nombreUsuario"> <span
+						class="focus-input100" data-symbol="&#xf206;"></span>
+				</div>
+				<div class="wrap-input100 validate-input"
+					data-validate="Contraseña requerida">
+					<span class="label-input100"> Contrase&ntilde;a </span> <input
+						class="input100" type="password" name="contrasenia"
+						placeholder="Ingresa tu Contrase&ntilde;a" id="id_contrasenia">
+					<span class="focus-input100" data-symbol="&#xf190;"></span>
+				</div>
+				<div class="container-login100-form-btn p-t-20">
+					<div class="wrap-login100-form-btn">
+						<div class="login100-form-bgbtn"></div>
+						<button id="id_ingresar" class="login100-form-btn" type="submit">Entrar</button>
+					</div>
+				</div>
+				<div class="container-login100-form-btn p-t-20">
+					<div class="wrap-login100-form-btn" style="width: 50%;">
+						<div class="login100-form-bgbtn"></div>
+						<a class="nav-link" href="/usuario/registro">
+							<button id="id_registrar" class="btn login100-form-btn"
+								type="button" style="height: 35px;">Registrarme</button>
+						</a>
+					</div>
+				</div>
+			</form>
+		</div>
+            <br>
+              <footer class="page-footer font-small blue pt-4 bg-dark">
+
+                    <!-- Footer Links -->
+                    <div class="container-fluid text-center text-md-left">
+
+                        <!-- Grid row -->
+                        <div class="row">
+
+                            <!-- Grid column -->
+                            <div class="col-md-6 mt-md-0 mt-3">
+
+                                <!-- Content -->
+                                <h5 class="text-uppercase text-white">Contactenos</h5>
+                                <p class="text-white">Espero que este contento con el objetivo .</p>
+
+                            </div>
+                            <!-- Grid column -->
+
+                            <hr class="clearfix w-100 d-md-none pb-3">
+
+                            <!-- Grid column -->
+                            <div class="col-md-3 mb-md-0 mb-3">
+
+                                <!-- Links -->
+                                <h5 class="text-uppercase text-white">Metodos de Pago</h5>
+
+                                <ul class="list-unstyled">
+                                    <li>
+                                        <a class="fa fa-paypal text-white" href="#!"> Paypal</a>
+                                    </li>
+                                    <li>
+                                        <a class="fa fa-cc-amex text-white" href="#!"> Amazon</a>
+                                    </li>
+                                    <li>
+                                        <a class="fa fa-apple-pay text-white" href="#!"> Apple</a>
+                                    </li>
+                                    <li>
+                                        <a class="fa fa-play text-white" href="#!"> Efectivo</a>
+                                    </li>
+                                </ul>
+
+                            </div>
+                            <!-- Grid column -->
+
+                            <!-- Grid column -->
+                            <div class="col-md-3 mb-md-0 mb-3">
+
+                                <!-- Links -->
+                                <h5 class="text-uppercase text-white">Nuestras redes</h5>
+
+                                <ul class="list-unstyled">
+                                    <li>
+                                        <a class="fa fa-google text-white" href="#!"> Google</a>
+                                    </li>
+                                    <li>
+                                        <a class="fa fa-twitter text-white" href="#!"> Twitter</a>
+                                    </li>
+                                    <li>
+                                        <a class="fa fa-instagram text-white" href="#!"> Instagram</a>
+                                    </li>
+                                    <li>
+                                        <a class="fa fa-twitch text-white" href="#!"> Twitch</a>
+                                    </li>
+                                </ul>
+
+                            </div>
+                            <!-- Grid column -->
+
+                        </div>
+                        <!-- Grid row -->
+
+                    </div>
+                    <!-- Footer Links -->
+
+                    <!-- Copyright -->
+                    <div class="footer-copyright text-center py-3 text-white">© 2020 Copyright:
+                        <a href="#"> Mi TecFound</a>
+                    </div>
+                    <!-- Copyright -->
+
+                </footer>
+
+	</div>
+
+	<!-- liberia completa de JQUERY -->
+	<!--===============================================================================================-->
+	<script th:src="@{/resources/vendor/jquery/jquery-3.2.1.min.js}"></script>
+	<!--===============================================================================================-->
+	<script th:src="@{/resources/vendor/animsition/js/animsition.min.js}"></script>
+	<!--===============================================================================================-->
+	<script th:src="@{/resources/vendor/bootstrap/js/popper.js}"></script>
+	<script th:src="@{/resources/vendor/bootstrap/js/bootstrap.min.js}"></script>
+	<!--===============================================================================================-->
+	<script th:src="@{/resources/vendor/main.js}"></script>
+	<!--===============================================================================================-->
+
+	<script>
+		
+	</script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
